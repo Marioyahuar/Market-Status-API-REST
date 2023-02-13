@@ -38,7 +38,6 @@ ws.on("open", () => {
 ///Receive data from websocket
 ws.on("message", function (msg) {
   msg = JSON.parse(msg);
-  //console.log(msg)
   if (msg.event) {
     if (msg.event !== "subscribed") return;
     else {
@@ -52,12 +51,9 @@ ws.on("message", function (msg) {
 
   // if msg contains checksum, perform checksum
   if (msg[1] === "cs") {
-    console.log(msg);
-    //console.log(BOOKS[orderbookIndex].chanId)
     const checksum = msg[2];
     const csdata = [];
     const BOOK = BOOKS[orderbookIndex];
-    //console.log(BOOK);
     const bidsKeys = BOOK.psnap["bids"];
     const asksKeys = BOOK.psnap["asks"];
 
@@ -80,13 +76,12 @@ ws.on("message", function (msg) {
     const csCalc = CRC.str(csStr);
     if (csCalc !== checksum) {
       console.error("CHECKSUM FAILED");
-      //process.exit(-1);
+      process.exit(-1);
     } else {
       console.log("Checksum: " + checksum + " success!");
     }
     return;
   }
-  //console.log((orderbookIndex != -1) ? orderbookIndex : 'No orderbook created yet');
   if (orderbookIndex == -1) return;
   else {
     if (BOOKS[orderbookIndex].mcnt === 0) {
@@ -161,12 +156,16 @@ router.get("/", (req, res) => {
 
 router.get("/orderbook/:pair", (req, res) => {
   const { pair } = req.params;
-  return res.status(400).send(pair);
+  const bookIndex = getOrderbookIndexBySymbol(pair);
+  const tips = getTips(BOOKS[bookIndex]);
+  return res.status(400).send(tips)
 });
 
 router.get("/market-depth/:pair/:type/:amount", (req, res) => {
   const { pair, type, amount } = req.params;
-  return res.status(400).send(amount);
+  const bookIndex = getOrderbookIndexBySymbol(pair);
+  const effectivePrice = calculateEffectivePriceVwap(BOOKS[bookIndex], type, amount)
+  return res.status(400).send(effectivePrice.toString());
 });
 
 router.get("/books", (req, res) => {
@@ -198,4 +197,78 @@ function getOrderbookIndex(chanId) {
   }
 
   return -1;
+}
+
+function getOrderbookIndexBySymbol(symbol){
+  let orderbookIndex = -1;
+  for (let i = 0; i < BOOKS.length; i++) {
+    if (BOOKS[i].symbol === symbol) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+function getTips(orderbook) {
+  const tips = {
+    bestBid: null,
+    bestAsk: null,
+  };
+
+  const bids = Object.values(orderbook.bids);
+  const asks = Object.values(orderbook.asks);
+
+  if (bids.length > 0) {
+    tips.bestBid = { price: bids[bids.length - 1].price, cnt: bids[bids.length - 1].cnt };
+  }
+
+  if (asks.length > 0) {
+    tips.bestAsk = { price: asks[0].price, cnt: asks[0].cnt };
+  }
+
+  return tips;
+}
+
+function calculateEffectivePrice(orderbook, type, amount) {
+  let orders = orderbook[type === 'buy' ? 'asks' : 'bids'];
+  let keys = Object.keys(orders);
+  let effectivePrice = 0;
+  let tradedAmount = 0;
+
+  for (let i = 0; i < keys.length; i++) {
+    let order = orders[keys[i]];
+
+    if (tradedAmount + order.amount >= amount) {
+      effectivePrice = order.price;
+      break;
+    } else {
+      tradedAmount += order.amount;
+    }
+  }
+
+  return effectivePrice;
+}
+
+function calculateEffectivePriceVwap(orderbook, type, amount) {
+  let sum = 0;
+  let volume = 0;
+  let data = type === 'buy' ? orderbook.bids : orderbook.asks;
+  let prices = Object.keys(data).sort((a, b) => type === 'buy' ? b - a : a - b);
+  
+  for (let i = 0; i < prices.length; i++) {
+    let price = prices[i];
+    let priceVolume = data[price].amount;
+    if (volume + priceVolume <= amount) {
+      sum += price * priceVolume;
+      volume += priceVolume;
+    } else {
+      let remainingVolume = amount - volume;
+      sum += price * remainingVolume;
+      volume += remainingVolume;
+      break;
+    }
+  }
+
+  return sum / amount;
 }
