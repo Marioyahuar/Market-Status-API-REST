@@ -28,7 +28,7 @@ The API will be available at **http://localhost:3000**.
 
 ## Endpoints
 
-### Get Orderbook
+### Get Orderbook Tips
 
 Retrieve the tips of the orderbook for a specific pair.
 
