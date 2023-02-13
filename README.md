@@ -12,7 +12,7 @@ This is a REST API that retrieves market information for trading pairs. The API 
 Clone the repository and install the dependencies:
 
 ```
-git clone git clone https://github.com/Marioyahuar/membrane-backend-cc.git
+git clone https://github.com/Marioyahuar/membrane-backend-cc.git
 cd membrane-backend-cc
 npm install
 ```
