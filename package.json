@@ -4,6 +4,7 @@
   "description": "Market Status API REST",
   "main": "index.js",
   "scripts": {
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,5 +23,8 @@
     "express": "^4.18.2",
     "lodash": "^4.17.21",
     "ws": "^8.12.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.34.0"
   }
 }
