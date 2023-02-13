@@ -1,0 +1,56 @@
+<html>
+  <head>
+    <script>
+      function fetchOrderbook(pair) {
+        fetch(`/orderbook/${pair}`)
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("orderbook-response").innerHTML = data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+      
+      function fetchMarketDepth(pair, type, amount, limit) {
+        console.log('amount ', amount)
+        if(!amount) {
+            document.getElementById("market-depth-response").innerHTML = 'Please enter a valid amount'; return;}
+
+        fetch(`/market-depth/${pair}/${type}/${amount}/${limit}`)
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById("market-depth-response").innerHTML = data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Tips of the Orderbook</h2>
+    <select id="pair-input">
+      <option value="BTCUSD">BTC-USD</option>
+      <option value="ETHUSD">ETH-USD</option>
+    </select>
+    <button onclick="fetchOrderbook(document.getElementById('pair-input').value)">Get Tips</button>
+    <br><br>
+    <div id="orderbook-response"></div>
+    
+    <h2>Effective Price Calculation</h2>
+    <select id="pair-input-depth">
+      <option value="BTCUSD">BTC-USD</option>
+      <option value="ETHUSD">ETH-USD</option>
+    </select>
+    <select id="type-input">
+        <option value="buy">BUY</option>
+        <option value="sell">SELL</option>
+      </select>
+    <input type="text" id="amount-input" placeholder="Enter amount">
+    <input type="text" id="limit-input" placeholder="Enter price limit">
+    <button onclick="fetchMarketDepth(document.getElementById('pair-input-depth').value, document.getElementById('type-input').value, document.getElementById('amount-input').value, document.getElementById('limit-input').value)">Get Effective Price</button>
+    <br><br>
+    <div id="market-depth-response"></div>
+  </body>
+</html>

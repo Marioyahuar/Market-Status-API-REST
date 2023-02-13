@@ -1,0 +1,26 @@
+{
+  "name": "membrane-backend-cc",
+  "version": "1.0.0",
+  "description": "Market Status API REST",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Marioyahuar/membrane-backend-cc.git"
+  },
+  "author": "Mario Yahuarcani Salinas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Marioyahuar/membrane-backend-cc/issues"
+  },
+  "homepage": "https://github.com/Marioyahuar/membrane-backend-cc#readme",
+  "dependencies": {
+    "crc-32": "^1.2.2",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "lodash": "^4.17.21",
+    "ws": "^8.12.0"
+  }
+}
