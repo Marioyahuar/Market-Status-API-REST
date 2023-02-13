@@ -33,6 +33,14 @@ ws.on("open", () => {
       prec: "P0",
     })
   );
+  ws.send(
+    JSON.stringify({
+      event: "subscribe",
+      channel: "book",
+      pair: "tSOLUSD",
+      prec: "P0",
+    })
+  );
 });
 
 ///Receive data from websocket

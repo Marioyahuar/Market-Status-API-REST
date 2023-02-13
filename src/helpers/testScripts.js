@@ -118,7 +118,7 @@ function calculateMaxOrderSize(orderbook, operation, limit, amount) {
   return { volume, effectivePrice };
 }
 
-function calculateMaxOrderSizeGTP(orderbook, operation, amount, limit) {
+function calculateMaxOrderSize2(orderbook, operation, amount, limit) {
   let data = operation === "buy" ? orderbook.asks : orderbook.bids;
   let prices = Object.keys(data).sort((a, b) =>
     operation === "buy" ? a - b : b - a
@@ -150,13 +150,11 @@ function calculateMaxOrderSizeGTP(orderbook, operation, amount, limit) {
   return { volume, effectivePrice, effectivePriceForAmount};
 }
 const price = calculateEffectivePriceVwap(orderBook, "buy", 10);
-const maxorder = calculateMaxOrderSizeGTP(orderBook, "buy", 2, 21838);
+const maxorder = calculateMaxOrderSize2(orderBook, "buy", 2, 21838);
 
 console.log(price);
 console.log(maxorder);
 
-
-/*
 
 router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
   const { pair, type, amount, limit = null } = req.params;
@@ -187,4 +185,3 @@ router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
   console.log(effectivePriceInfo)
   return res.status(400).send(effectivePriceInfo);
 });
-*/ 
