@@ -157,22 +157,54 @@ router.get("/", (req, res) => {
 router.get("/orderbook/:pair", (req, res) => {
   const { pair } = req.params;
   const bookIndex = helpers.getOrderbookIndexBySymbol(BOOKS, pair);
-  const tips = helpers.getTips(BOOKS[bookIndex]);
-  return res.status(400).send(BOOKS[bookIndex]);
+  const tips =
+    bookIndex != -1
+      ? helpers.getTips(BOOKS[bookIndex])
+      : "API does not support this pair yet =( If you want to add this pair please contact me: myahuarcanisalinas@gmail.com";
+  return res.status(400).send(tips);
 });
 
 router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
   const { pair, type, amount, limit = null } = req.params;
   const bookIndex = helpers.getOrderbookIndexBySymbol(BOOKS, pair);
-  const effectivePrice = limit === null
-    ? helpers.calculateEffectivePriceVwap(BOOKS[bookIndex], type, amount).toString()
-    : helpers.calculateEffectivePriceAndMaxOrderSize(
+  if (bookIndex === -1) return res.status(400).send('API does not support this pair yet =( If you want to add this pair please contact me: myahuarcanisalinas@gmail.com')
+  let effectivePriceInfo = {
+    effectivePrice: 0,
+    maxOrderSize: 0,
+    effectivePriceForMaxOrderSize: 0,
+  };
+
+  if (limit === null) {
+    effectivePriceInfo = {
+      effectivePrice: helpers.calculateEffectivePriceVwap(
         BOOKS[bookIndex],
         type,
-        amount,
-        limit
-      );
-  return res.status(400).send(effectivePrice);
+        amount
+      ),
+      maxOrderSize: null,
+      effectivePriceForMaxOrderSize: null,
+    };
+  } else {
+    effectPrice = helpers.calculateEffectivePriceAndMaxOrderSize(
+      BOOKS[bookIndex],
+      type,
+      amount,
+      limit
+    );
+    console.log(effectPrice);
+    effectivePriceInfo = {
+      effectivePrice: effectPrice.effectivePriceForAmount,
+      maxOrderSize: (effectPrice.volume === 0) ? 'No order can be executed at the indicated limit price' : effectPrice.volume,
+      effectivePriceForMaxOrderSize: (effectPrice.volume === 0) ? 'No order can be executed at the indicated limit price' : effectPrice.effectivePrice,
+    };
+  }
+
+  
+  return res.status(400).send(`{
+    Effective price for amount required: ${effectivePriceInfo.effectivePrice},
+    Maximum order size for limit price: ${effectivePriceInfo.maxOrderSize || "Not required"},
+    Effective price for maximum order size: ${effectivePriceInfo.effectivePriceForMaxOrderSize || "Not required"}
+  }`);
 });
 
 router.get("/books", (req, res) => {

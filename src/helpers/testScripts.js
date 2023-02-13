@@ -77,7 +77,11 @@ function calculateEffectivePriceVwap(orderbook, type, amount) {
     }
   }
 
-  return sum / amount;
+  if(amount > volume) {
+    return 'The amount requested exceeds the maximum order size'
+  }else{
+    return sum/amount
+  }
 }
 
 function calculateMaxOrderSize(orderbook, operation, limit, amount) {
@@ -145,8 +149,42 @@ function calculateMaxOrderSizeGTP(orderbook, operation, amount, limit) {
 
   return { volume, effectivePrice, effectivePriceForAmount};
 }
-const price = calculateEffectivePriceVwap(orderBook, "buy", 2);
-const maxorder = calculateMaxOrderSizeGTP(orderBook, "buy", 2, 20000);
+const price = calculateEffectivePriceVwap(orderBook, "buy", 10);
+const maxorder = calculateMaxOrderSizeGTP(orderBook, "buy", 2, 21838);
 
 console.log(price);
 console.log(maxorder);
+
+
+/*
+
+router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
+  const { pair, type, amount, limit = null } = req.params;
+  const bookIndex = helpers.getOrderbookIndexBySymbol(BOOKS, pair);
+  let effectivePriceInfo = {
+    effectivePrice: 0,
+    maxOrderSize: 0,
+    effectivePriceForMaxOrderSize: 0
+  }
+
+  if(limit === null){
+    effectivePriceInfo = {
+      effectivePrice: helpers.calculateEffectivePriceVwap(BOOKS[bookIndex], type, amount),
+      maxOrderSize: 'Not required',
+      effectivePriceForMaxOrderSize: 'Not required'
+    }
+  }
+  else{
+    effectPrice = helpers.calculateEffectivePriceAndMaxOrderSize(BOOKS[bookIndex], type, amount, limit)
+    console.log(effectPrice)
+    effectivePriceInfo = {
+      effectivePriceInfo: effectPrice.effectivePrice,
+      maxOrderSize: effectPrice.volume,
+      effectivePriceForMaxOrderSize: effectPrice.effectivePriceForAmount
+    }
+  }
+
+  console.log(effectivePriceInfo)
+  return res.status(400).send(effectivePriceInfo);
+});
+*/ 

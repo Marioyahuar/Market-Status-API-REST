@@ -57,27 +57,9 @@ function getTips(orderbook) {
   return tips;
 }
 
-function calculateEffectivePrice(orderbook, type, amount) {
-  let orders = orderbook[type === "buy" ? "asks" : "bids"];
-  let keys = Object.keys(orders);
-  let effectivePrice = 0;
-  let tradedAmount = 0;
-
-  for (let i = 0; i < keys.length; i++) {
-    let order = orders[keys[i]];
-
-    if (tradedAmount + order.amount >= amount) {
-      effectivePrice = order.price;
-      break;
-    } else {
-      tradedAmount += order.amount;
-    }
-  }
-
-  return effectivePrice;
-}
-
 function calculateEffectivePriceVwap(orderbook, type, amount) {
+  if (type !== "buy" && type !== "sell") return "Not valid type of operation";
+  if (amount == null) return "Not amount provided";
   let sum = 0;
   let volume = 0;
   let data = type === "buy" ? orderbook.asks : orderbook.bids;
@@ -99,10 +81,19 @@ function calculateEffectivePriceVwap(orderbook, type, amount) {
     }
   }
 
-  return sum / amount;
+  if (amount > volume) {
+    return "The amount requested exceeds the maximum order size";
+  } else {
+    return sum / amount;
+  }
 }
 
-function calculateEffectivePriceAndMaxOrderSize(orderbook, operation, amount, limit) {
+function calculateEffectivePriceAndMaxOrderSize(
+  orderbook,
+  operation,
+  amount,
+  limit
+) {
   let data = operation === "buy" ? orderbook.asks : orderbook.bids;
   let prices = Object.keys(data).sort((a, b) =>
     operation === "buy" ? a - b : b - a
@@ -142,8 +133,8 @@ helpers.createOrderbook = createOrderbook;
 helpers.getOrderbookIndex = getOrderbookIndex;
 helpers.getOrderbookIndexBySymbol = getOrderbookIndexBySymbol;
 helpers.getTips = getTips;
-helpers.calculateEffectivePrice = calculateEffectivePrice;
 helpers.calculateEffectivePriceVwap = calculateEffectivePriceVwap;
-helpers.calculateEffectivePriceAndMaxOrderSize = calculateEffectivePriceAndMaxOrderSize;
+helpers.calculateEffectivePriceAndMaxOrderSize =
+  calculateEffectivePriceAndMaxOrderSize;
 
 module.exports = helpers;
