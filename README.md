@@ -76,25 +76,32 @@ GET /market-depth/:pair/:type/:amount/:limit?
 GET /market-depth/BTCUSD/buy/2/
 ```
 ```
-GET /market-depth/BTCUSD/buy/2/21385
+GET /market-depth/BTCUSD/buy/2/21510
 ```
 
 #### Responses
 
-```
-{ Effective price for amount required: 21508.06010605, 
-Maximum order size for limit price: Not required, 
-Effective price for maximum order size: Not required }
-```
+* If not limit is defined
 
 ```
-{ Effective price for amount required: 21502.37850446, 
-Maximum order size for limit price: 11.245565042005135, 
-Effective price for maximum order size: 21510 }
+{ Effective price for amount required: 21508.06010, 
+Maximum order size for limit price: Not required, 
+Effective price for maximum order size: Not required
+Total price if order is executed: 43016.12020}
 ```
+
+* If limit is defined
+
+```
+{ Effective price for amount required: 21502.37850, 
+Maximum order size for limit price: 11.245565042005135, 
+Effective price for maximum order size: 21510 
+Total price if order is executed: 43004.75700}
+```
+
 ### Additional trading pairs
 
-One of the strengths of the API is its ability to easily add additional trading pairs. To add a new pair, simply subscribe to the respective websocket stream and that's all. The API will handle the rest.
+One of the strengths of the API is its ability to easily add additional trading pairs. To add a new pair, simply subscribe to the respective websocket stream in the **bitfinexBooks.js** file and that's all. The API will handle the rest.
 
 Example:
 
@@ -127,20 +134,21 @@ Stay tuned for updates on this feature!
 
 ### Other features
 
-* Checksum Verification: The API supports the option to request that checksums be sent through the WebSocket connection and makes the calculations to verify that the orderbook data is correct and up to date. See the result in console while the server is running:
+* Checksum Verification: The API supports the option to request checksums to be sent through the WebSocket connection and makes the calculations to verify that the orderbook data is correct and up to date. See the result in console while the server is running:
 
 ```
 Checksum: -1508730772 success!
 Checksum: -903310496 success!
 ```
 * HTML interface: The API support a simple HTTP interface to fetch the endpoints.
+* WebSocket connection for Real-time display of the tips of the orderbook in the user interface.
 
 ### Upcoming features
 
 I'm working to improve the API and provide the best experience for users. Here are some of the upcoming features i'm working on:
 
 * Creation of a set of units tests for the logic used in the effective price calculation
-* Real-time display of the tips of the orderbook in the user interface
+* ~~Real-time display of the tips of the orderbook in the user interface~~
 * Improved performance and scalability
 
 If you have any suggestions or ideas for new features, please open an issue in the repository and let me know. I would love to hear from you!
