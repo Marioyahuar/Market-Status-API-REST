@@ -35,7 +35,6 @@ wss.on("connection", (ws) => {
 
   ws.on("message", (message) => {
     const selectedPair = JSON.parse(message).selectedPair;
-    console.log(selectedPair);
 
     // Periodically send updated orderbook data to the connected client
     setInterval(() => {
