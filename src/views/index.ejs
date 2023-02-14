@@ -1,32 +1,6 @@
 <html>
   <head>
-    <script>
-      function fetchOrderbook(pair) {
-        fetch(`/orderbook/${pair}`)
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById("orderbook-response").innerHTML = data;
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-      
-      function fetchMarketDepth(pair, type, amount, limit) {
-        console.log('amount ', amount)
-        if(!amount) {
-            document.getElementById("market-depth-response").innerHTML = 'Please enter a valid amount'; return;}
-
-        fetch(`/market-depth/${pair}/${type}/${amount}/${limit}`)
-          .then(response => response.text())
-          .then(data => {
-            document.getElementById("market-depth-response").innerHTML = data;
-          })
-          .catch(error => {
-            console.error(error);
-          });
-      }
-    </script>
+    <script src = "/main.js"></script>
   </head>
   <body>
     <h2>Tips of the Orderbook</h2>
@@ -34,7 +8,7 @@
       <option value="BTCUSD">BTC-USD</option>
       <option value="ETHUSD">ETH-USD</option>
     </select>
-    <button onclick="fetchOrderbook(document.getElementById('pair-input').value)">Get Tips</button>
+    <button onclick="selectPair(document.getElementById('pair-input').value)">Get Tips in Real Time</button>
     <br><br>
     <div id="orderbook-response"></div>
     

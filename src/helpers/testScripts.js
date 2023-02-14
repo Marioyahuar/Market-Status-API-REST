@@ -1,4 +1,4 @@
-const orderBook = {
+/* const orderBook = {
   bids: {
     21809: { price: 21809, cnt: 2, amount: 2.99484591 },
     21810: { price: 21810, cnt: 1, amount: 0.036 },
@@ -77,10 +77,10 @@ function calculateEffectivePriceVwap(orderbook, type, amount) {
     }
   }
 
-  if(amount > volume) {
-    return 'The amount requested exceeds the maximum order size'
-  }else{
-    return sum/amount
+  if (amount > volume) {
+    return "The amount requested exceeds the maximum order size";
+  } else {
+    return sum / amount;
   }
 }
 
@@ -126,7 +126,11 @@ function calculateMaxOrderSize2(orderbook, operation, amount, limit) {
   let volume = 0;
   let prevEffectivePrice = 0;
   let effectivePrice = 0;
-  let effectivePriceForAmount = calculateEffectivePriceVwap(orderbook,operation,amount);
+  let effectivePriceForAmount = calculateEffectivePriceVwap(
+    orderbook,
+    operation,
+    amount
+  );
   for (let i = 0; i < prices.length; i++) {
     let price = prices[i];
     let priceVolume = data[price].amount;
@@ -147,7 +151,7 @@ function calculateMaxOrderSize2(orderbook, operation, amount, limit) {
     }
   }
 
-  return { volume, effectivePrice, effectivePriceForAmount};
+  return { volume, effectivePrice, effectivePriceForAmount };
 }
 const price = calculateEffectivePriceVwap(orderBook, "buy", 10);
 const maxorder = calculateMaxOrderSize2(orderBook, "buy", 2, 21838);
@@ -155,33 +159,96 @@ const maxorder = calculateMaxOrderSize2(orderBook, "buy", 2, 21838);
 console.log(price);
 console.log(maxorder);
 
-
 router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
   const { pair, type, amount, limit = null } = req.params;
   const bookIndex = helpers.getOrderbookIndexBySymbol(BOOKS, pair);
   let effectivePriceInfo = {
     effectivePrice: 0,
     maxOrderSize: 0,
-    effectivePriceForMaxOrderSize: 0
-  }
+    effectivePriceForMaxOrderSize: 0,
+  };
 
-  if(limit === null){
+  if (limit === null) {
     effectivePriceInfo = {
-      effectivePrice: helpers.calculateEffectivePriceVwap(BOOKS[bookIndex], type, amount),
-      maxOrderSize: 'Not required',
-      effectivePriceForMaxOrderSize: 'Not required'
-    }
-  }
-  else{
-    effectPrice = helpers.calculateEffectivePriceAndMaxOrderSize(BOOKS[bookIndex], type, amount, limit)
-    console.log(effectPrice)
+      effectivePrice: helpers.calculateEffectivePriceVwap(
+        BOOKS[bookIndex],
+        type,
+        amount
+      ),
+      maxOrderSize: "Not required",
+      effectivePriceForMaxOrderSize: "Not required",
+    };
+  } else {
+    effectPrice = helpers.calculateEffectivePriceAndMaxOrderSize(
+      BOOKS[bookIndex],
+      type,
+      amount,
+      limit
+    );
+    console.log(effectPrice);
     effectivePriceInfo = {
       effectivePriceInfo: effectPrice.effectivePrice,
       maxOrderSize: effectPrice.volume,
-      effectivePriceForMaxOrderSize: effectPrice.effectivePriceForAmount
-    }
+      effectivePriceForMaxOrderSize: effectPrice.effectivePriceForAmount,
+    };
   }
 
-  console.log(effectivePriceInfo)
+  console.log(effectivePriceInfo);
   return res.status(400).send(effectivePriceInfo);
+}); */
+
+const express = require("express");
+const path = require("path"); 
+const WebSocket = require("ws");
+const server = express().listen(3000, () => {
+  console.log("Listening on 3000");
+});
+
+const app = express();
+
+const ws = new WebSocket("wss://api.bitfinex.com/ws/2");
+const wss = new WebSocket.Server({ server });
+let mensg = {};
+
+app.use(express.static(path.join(__dirname, "public")));
+
+ws.on("open", () => {
+  //Initialize book
+
+  // send websocket conf event with checksum flag
+  ws.send(JSON.stringify({ event: "conf", flags: 131072 }));
+
+  // send subscribe to get desired book updates
+  ws.send(
+    JSON.stringify({
+      event: "subscribe",
+      channel: "book",
+      pair: "tBTCUSD",
+      prec: "P0",
+    })
+  );
+});
+
+ws.on("message", function (msg) {
+  msg = JSON.parse(msg);
+  mensg = msg;
+  console.log(mensg)
+});
+
+app.get("/", (req,res) =>{
+  return res.render("index")
+});
+
+app.get("/orderbook", (req, res) => {
+  //const { pair } = req.params;
+  const tips = mensg;
+    
+
+  wss.on("connection", (ws) => {
+    ws.send(JSON.stringify(tips));
+    ws.on("message", (message) => {
+      console.log(`received: ${message}`);
+    });
+  });
+  return res.status(400).send(tips);
 });
