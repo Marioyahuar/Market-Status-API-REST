@@ -14,7 +14,7 @@ ws.on("open", () => {
   // Send websocket conf event with checksum flag
   ws.send(JSON.stringify({ event: "conf", flags: 131072 }));
 
-  // send subscribe to get desired book updates. Right now supported BTCUSD and ETHUSD
+  // send subscribe to get desired book updates. Right now supported BTCUSD and ETHUSD. 
   ws.send(
     JSON.stringify({
       event: "subscribe",

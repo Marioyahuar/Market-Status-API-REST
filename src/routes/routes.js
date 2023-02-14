@@ -78,7 +78,7 @@ router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
   <strong>Effective price for maximum order size:</strong> ${
     effectivePriceInfo.effectivePriceForMaxOrderSize || "Not required"
   } USD<br>
-  <strong>Total price:</strong> ${
+  <strong>Total price if order is executed:</strong> ${
     effectivePriceInfo.effectivePrice * amount
   } USD
   `;
