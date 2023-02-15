@@ -160,11 +160,11 @@ npm test
 
 Testing includes 5 scenarios
 
-√ The type of operation is invalid (Is not buy nor sell)
-√ Not amount is provided
-√ The amount requested exceeds the maximum order size that the orderbook can fill
-√ Calculation of the effective price for a buy order
-√ Calculation of the effective price for a sell order
+* The type of operation is invalid (Is not buy nor sell)
+* Not amount is provided
+* The amount requested exceeds the maximum order size that the orderbook can fill
+* Calculation of the effective price for a buy order
+* Calculation of the effective price for a sell order
 
 ### Support
 
