@@ -26,6 +26,7 @@ router.get("/orderbook/:pair", (req, res) => {
 router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
   const { pair, type, amount, limit = null } = req.params;
   const bookIndex = helpers.getOrderbookIndexBySymbol(BOOKS, pair);
+  console.log(BOOKS[bookIndex]);
   if (bookIndex === -1)
     return res
       .status(400)

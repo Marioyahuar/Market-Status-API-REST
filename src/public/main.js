@@ -18,31 +18,33 @@ function selectPair(pair) {
     // ...
   };
 
-  socket.onclose = () => {
-  };
+  socket.onclose = () => {};
 }
 
 function fetchOrderbook(pair) {
-    fetch(`/orderbook/${pair}`)
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById("orderbook-response").innerHTML = data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
-  }
-  
-  function fetchMarketDepth(pair, type, amount, limit) {
-    if(!amount) {
-        document.getElementById("market-depth-response").innerHTML = 'Please enter a valid amount'; return;}
+  fetch(`/orderbook/${pair}`)
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("orderbook-response").innerHTML = data;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
 
-    fetch(`/market-depth/${pair}/${type}/${amount}/${limit}`)
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById("market-depth-response").innerHTML = data;
-      })
-      .catch(error => {
-        console.error(error);
-      });
+function fetchMarketDepth(pair, type, amount, limit) {
+  if (!amount) {
+    document.getElementById("market-depth-response").innerHTML =
+      "Please enter a valid amount";
+    return;
   }
+
+  fetch(`/market-depth/${pair}/${type}/${amount}/${limit}`)
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("market-depth-response").innerHTML = data;
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+}
