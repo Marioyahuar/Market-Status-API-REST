@@ -143,16 +143,28 @@ Checksum: -903310496 success!
 * HTML interface: The API support a simple HTTP interface to fetch the endpoints.
 * WebSocket connection for Real-time display of the tips of the orderbook in the user interface.
 
-### Upcoming features
+### Testing
 
-I'm working to improve the API and provide the best experience for users. Here are some of the upcoming features i'm working on:
+API includes a set of unit tests for the logic used in effective price calculation.
 
-* Creation of a set of units tests for the logic used in the effective price calculation
-* ~~Real-time display of the tips of the orderbook in the user interface~~
-* Improved performance and scalability
+To run the unit tests for this project, you'll need to have Jest installed. If you don't already have Jest installed, you can install it using npm:
 
-If you have any suggestions or ideas for new features, please open an issue in the repository and let me know. I would love to hear from you!
+```
+npm install --save-dev jest
+```
 
+Once Jest is installed, you can run the tests by executing the following command:
+```
+npm test
+```
+
+Testing includes 5 scenarios
+
+√ The type of operation is invalid (Is not buy nor sell)
+√ Not amount is provided
+√ The amount requested exceeds the maximum order size that the orderbook can fill
+√ Calculation of the effective price for a buy order
+√ Calculation of the effective price for a sell order
 
 ### Support
 
