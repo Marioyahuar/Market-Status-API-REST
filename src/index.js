@@ -42,9 +42,11 @@ wss.on("connection", (ws) => {
       const tips =
         bookIndex != -1
           ? helpers.getTips(BOOKS[bookIndex])
-          : "API does not support this pair yet =( If you want to add this pair please contact me: myahuarcanisalinas@gmail.com";
+          : -1;
 
-      const formattedData = `<pre>
+          let formattedData = "";
+      if(tips == -1) formattedData = "API does not support this pair yet or is still creating the orderbooks. Try again in a few seconds or write to myahuarcanisalinas@gmail.com"
+      else formattedData = `<pre>
       <strong>Best Bid</strong><br>
       price: ${tips.bestBid.price}<br>
       amount: ${tips.bestBid.amount.toFixed(5)}<br>

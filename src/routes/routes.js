@@ -30,7 +30,7 @@ router.get("/market-depth/:pair/:type/:amount/:limit?", (req, res) => {
     return res
       .status(400)
       .send(
-        "API does not support this pair yet =( If you want to add this pair please contact me: myahuarcanisalinas@gmail.com"
+        "API does not support this pair yet or is still creating the orderbooks. Try again in a few seconds or write to myahuarcanisalinas@gmail.com"
       );
   let effectivePriceInfo = {
     effectivePrice: 0,
