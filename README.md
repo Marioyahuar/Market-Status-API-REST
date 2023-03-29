@@ -11,8 +11,8 @@ This is a REST API that retrieves market information for trading pairs. The API 
 Clone the repository and install the dependencies:
 
 ```
-git clone https://github.com/Marioyahuar/membrane-backend-cc.git
-cd membrane-backend-cc
+git clone https://github.com/Marioyahuar/Market-Status-API-REST.git
+cd Market-Status-API-REST
 npm install
 ```
 
