@@ -1,4 +1,3 @@
-# membrane-backend-cc
 # Market Status API REST
 
 This is a REST API that retrieves market information for trading pairs. The API provides the tips of the orderbook for a specific pair and the effective price for a trade. The backend consumes data from an external exchange through a WebSocket connection.
